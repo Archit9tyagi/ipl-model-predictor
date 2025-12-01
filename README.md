@@ -1,6 +1,6 @@
 # IPL Model Predictor 🏏
 
-A Streamlit application for loading and using machine learning models via pickle files to make predictions.
+A Streamlit web application for loading and running IPL prediction models via pickle files.
 
 ## Features
 
