@@ -71,16 +71,21 @@ team_icons = {
 # ---------------------------------------------------------
 # LOAD MODEL
 # ---------------------------------------------------------
-@st.cache_resource
+@st.cache_resource(ttl=None)
 def load_model():
+    """Load the machine learning model with error handling"""
     try:
-        with open("pipe.pkl", "rb") as f:
-            return pickle.load(f)
+        model_path = "pipe.pkl"
+        with open(model_path, "rb") as f:
+            model = pickle.load(f)
+        return model
     except FileNotFoundError:
         st.error("⚠️ Model file (pipe.pkl) not found!")
         return None
     except Exception as e:
         st.error(f"⚠️ Error loading model: {str(e)}")
+        import traceback
+        st.error(f"```\n{traceback.format_exc()}\n```")
         return None
 
 pipe = load_model()
@@ -418,6 +423,14 @@ with st.sidebar:
     if st.button("🔄 Reset All", use_container_width=True, type="primary"):
         for key, val in defaults.items():
             st.session_state[key] = val
+        st.rerun()
+    
+    # Add cache clear button for troubleshooting
+    st.divider()
+    st.caption("Troubleshooting")
+    if st.button("🔧 Clear Model Cache", use_container_width=True):
+        st.cache_resource.clear()
+        st.success("Cache cleared! Refreshing...")
         st.rerun()
 
 # ---------------------------------------------------------
